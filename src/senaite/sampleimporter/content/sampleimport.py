@@ -860,7 +860,12 @@ class SampleImport(BaseContent):
             catalog = at.catalog_map.get(portal_type, [None])[0]
             catalog = getToolByName(self, catalog)
             kwargs['portal_type'] = portal_type
-            brains = catalog(**kwargs)
+            try:
+                brains = catalog(**kwargs)
+            except Exception:
+                kwargs['Title'] = kwargs["Title"].replace("(", '"("')
+                kwargs['Title'] = kwargs["Title"].replace(")", '")"')
+                brains = catalog(**kwargs)
             if brains:
                 return brains
 
