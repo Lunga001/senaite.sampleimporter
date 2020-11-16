@@ -19,6 +19,7 @@
 # Some rights reserved, see README and LICENSE.
 
 import os
+from bika.lims import api
 from bika.lims import bikaMessageFactory as _
 from bika.lims.browser import BrowserView, ulocalized_time
 from bika.lims.browser.bika_listing import BikaListingView
@@ -110,6 +111,13 @@ class SampleImportsView(BikaListingView):
             if 'obj' not in items[x]:
                 continue
             obj = items[x]['obj']
+            # NOTE: Some about obj that returns the brains and not the object
+            # it could be that folderitems has been changange on the listing
+            # this is a hack for to make it work
+            if api.is_brain(obj):
+                obj = obj.getObject()
+            # End of NOTE
+
             items[x]['Title'] = obj.title_or_id()
             if items[x]['review_state'] == 'invalid':
                 items[x]['replace']['Title'] = "<a href='%s/edit'>%s</a>" % (
